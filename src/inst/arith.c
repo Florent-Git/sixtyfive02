@@ -1,4 +1,7 @@
 #include "arith.h"
+
+#include <cpu/cpu.h>
+
 #include "../cpu/types.h"
 
 /*
@@ -19,10 +22,33 @@
     (indirect),Y	ADC (oper),Y	71	2	    5* 
 */
 void adc(struct cpu *cpu, struct mem *mem, byte *addr) {
-    short value = ((short) *addr) & 0xFF;
-    short result = cpu->rega + value + (cpu->sr & 1);
-    if (result > 0xFF) cpu->sr |= 1;
-    else cpu->sr &= 0b11111110;
+    short value = (short) *addr & 0xFF;
+    short result = cpu->rega + value + get_C(cpu);
+
+    if (((cpu->rega ^ result) & (value ^ result) & 0x80) != 0) {
+        enable_V(cpu);
+    } else {
+        disable_V(cpu);
+    }
+
+    if (result > 0xFF) {
+        enable_C(cpu);
+    } else {
+        disable_C(cpu);
+    }
+
+    if ((result & 0xFF) == 0) {
+        enable_Z(cpu);
+    } else {
+        disable_Z(cpu);
+    }
+
+    if (result & 0x80) {
+        enable_N(cpu);
+    } else {
+        disable_N(cpu);
+    }
+
     cpu->rega = result;
 }
 
@@ -44,5 +70,7 @@ SBC
     (indirect),Y	SBC (oper),Y	F1	2	    5*
 */
 void sbc(struct cpu *cpu, struct mem *mem, byte *addr) {
-
+    cpu->tmp = ~*addr & 0xFF;
+    invert_C(cpu);
+    adc(cpu, mem, &cpu->tmp);
 }

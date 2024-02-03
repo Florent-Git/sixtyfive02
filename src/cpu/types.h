@@ -8,16 +8,13 @@ typedef unsigned char byte;
 
 short btos(byte, byte);
 
-enum {
-    N = 1 << 7,
-    V = 1 << 6,
-    _ = 1 << 5,
-    B = 1 << 4,
-    D = 1 << 3,
-    I = 1 << 2,
-    Z = 1 << 1,
-    C = 1 << 0,
-};
+#define N 1 << 7
+#define V 1 << 6
+#define B 1 << 4
+#define D 1 << 3
+#define I 1 << 2
+#define Z 1 << 1
+#define C 1
 
 struct cpu {
     // 3 8-bit registers
