@@ -6,20 +6,22 @@
 #define TEST_H
 
 #include <check.h>
-#include <cpu/cpu.h>
-#include <mem/mem.h>
-#include <inst/instruction_table.h>
+#include <../src/cpu/cpu.h>
+#include <../src/mem/mem.h>
+#include <../src/inst/instruction_table.h>
+
 
 #define START_SF02_TEST(__testname)\
     START_TEST(__testname) {\
         struct cpu* cpu = initialize_cpu();\
-        struct mem* mem = initialize_memory();\
-        struct inst* inst = initialize_inst_table();
+        struct mem* mem = initialize_memory();
 
 #define END_SF02_TEST\
-    free_inst_table(inst);\
     free_memory(mem);\
     free_cpu(cpu);\
     } END_TEST
+
+#define END_SUITE(__suitename)\
+    free(__suitename)
 
 #endif //TEST_H

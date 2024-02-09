@@ -11,6 +11,7 @@ byte* abs_x(struct cpu*, struct mem*, byte, byte);
 byte* abs_y(struct cpu*, struct mem*, byte, byte);
 byte* zero_page_x(struct cpu*, struct mem*, byte, byte);
 byte* zero_page_y(struct cpu*, struct mem*, byte, byte);
+byte* indirect(struct cpu* cpu, struct mem* mem, byte b1, byte b2);
 byte* pre_indirect(struct cpu*, struct mem*, byte, byte);
 byte* post_indirect(struct cpu*, struct mem*, byte, byte);
 
