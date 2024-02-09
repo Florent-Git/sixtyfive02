@@ -76,6 +76,14 @@ struct inst* initialize_inst_table() {
     insert_inst(root, 0x79, 3, 4, abs_y, adc);
     insert_inst(root, 0x61, 2, 6, pre_indirect, adc);
     insert_inst(root, 0x71, 2, 5, post_indirect, adc);
+    insert_inst(root, 0xE9, 2, 2, immediate, sbc);
+    insert_inst(root, 0xE5, 2, 3, zero_page, sbc);
+    insert_inst(root, 0xF5, 2, 4, zero_page_x, sbc);
+    insert_inst(root, 0xED, 3, 4, abs_addr, sbc);
+    insert_inst(root, 0xFD, 3, 4, abs_x, sbc);
+    insert_inst(root, 0xF9, 3, 4, abs_y, sbc);
+    insert_inst(root, 0xE1, 2, 6, pre_indirect, sbc);
+    insert_inst(root, 0xF1, 2, 5, post_indirect, sbc);
 
     return root;
 }

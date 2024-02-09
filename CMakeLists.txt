@@ -13,6 +13,8 @@ add_library(sixtyfive02-lib
         src/inst/arith.c
         src/inst/instruction_table.c
         src/inst/trans.c
+        src/inst/flags.c
+        src/inst/flags.h
 )
 
 target_include_directories(sixtyfive02-lib PUBLIC src)
@@ -27,7 +29,11 @@ find_package(Check)
 
 add_executable(sixtyfive02-test
         test/inst/arith_test.c
-        test/inst/test.h
+        test/test.h
+        test/test.c
+        test/inst/arith_test.h
+        test/mem/mem_test.c
+        test/mem/mem_test.h
 )
 
 target_link_libraries(sixtyfive02-test PRIVATE check sixtyfive02-lib m subunit)

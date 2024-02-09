@@ -21,32 +21,36 @@
     (indirect,X)	ADC (oper,X)	61	2	    6  
     (indirect),Y	ADC (oper),Y	71	2	    5* 
 */
-void adc(struct cpu *cpu, struct mem *mem, byte *addr) {
+void adc(
+    struct cpu *cpu,
+    struct mem *mem,
+    byte *addr
+) {
     short value = (short) *addr & 0xFF;
     short result = cpu->rega + value + get_C(cpu);
 
     if (((cpu->rega ^ result) & (value ^ result) & 0x80) != 0) {
-        enable_V(cpu);
+        set_V(cpu);
     } else {
-        disable_V(cpu);
+        clear_V(cpu);
     }
 
-    if (result > 0xFF) {
-        enable_C(cpu);
+    if (result & 0x100) {
+        set_C(cpu);
     } else {
-        disable_C(cpu);
+        clear_C(cpu);
     }
 
     if ((result & 0xFF) == 0) {
-        enable_Z(cpu);
+        set_Z(cpu);
     } else {
-        disable_Z(cpu);
+        clear_Z(cpu);
     }
 
     if (result & 0x80) {
-        enable_N(cpu);
+        set_N(cpu);
     } else {
-        disable_N(cpu);
+        clear_N(cpu);
     }
 
     cpu->rega = result;
@@ -69,8 +73,14 @@ SBC
     (indirect,X)	SBC (oper,X)	E1	2	    6
     (indirect),Y	SBC (oper),Y	F1	2	    5*
 */
-void sbc(struct cpu *cpu, struct mem *mem, byte *addr) {
+void sbc(
+    struct cpu *cpu,
+    struct mem *mem,
+    byte *addr
+) {
     cpu->tmp = ~*addr & 0xFF;
     invert_C(cpu);
     adc(cpu, mem, &cpu->tmp);
+
+
 }

@@ -3,25 +3,25 @@
 
 #include "types.h"
 
-#define enable_bit(cpu, bit) cpu->sr |= bit
-#define disable_bit(cpu, bit) cpu->sr &= (~bit & 0xFF)
-#define invert_bit(cpu, bit) cpu->sr ^ bit
+#define set_bit(cpu, bit) cpu->sr = cpu->sr | bit
+#define clear_bit(cpu, bit) cpu->sr = cpu->sr ^ (~bit & 0xFF)
+#define invert_bit(cpu, bit) cpu->sr = cpu->sr ^ bit
 
-#define enable_N(cpu) enable_bit(cpu, N)
-#define enable_V(cpu) enable_bit(cpu, V)
-#define enable_B(cpu) enable_bit(cpu, B)
-#define enable_D(cpu) enable_bit(cpu, D)
-#define enable_I(cpu) enable_bit(cpu, I)
-#define enable_Z(cpu) enable_bit(cpu, Z)
-#define enable_C(cpu) enable_bit(cpu, C)
+#define set_N(cpu) set_bit(cpu, N)
+#define set_V(cpu) set_bit(cpu, V)
+#define set_B(cpu) set_bit(cpu, B)
+#define set_D(cpu) set_bit(cpu, D)
+#define set_I(cpu) set_bit(cpu, I)
+#define set_Z(cpu) set_bit(cpu, Z)
+#define set_C(cpu) set_bit(cpu, C)
 
-#define disable_N(cpu) disable_bit(cpu, N)
-#define disable_V(cpu) disable_bit(cpu, V)
-#define disable_B(cpu) disable_bit(cpu, B)
-#define disable_D(cpu) disable_bit(cpu, D)
-#define disable_I(cpu) disable_bit(cpu, I)
-#define disable_Z(cpu) disable_bit(cpu, Z)
-#define disable_C(cpu) disable_bit(cpu, C)
+#define clear_N(cpu) clear_bit(cpu, N)
+#define clear_V(cpu) clear_bit(cpu, V)
+#define clear_B(cpu) clear_bit(cpu, B)
+#define clear_D(cpu) clear_bit(cpu, D)
+#define clear_I(cpu) clear_bit(cpu, I)
+#define clear_Z(cpu) clear_bit(cpu, Z)
+#define clear_C(cpu) clear_bit(cpu, C)
 
 #define invert_N(cpu) invert_bit(cpu, N)
 #define invert_V(cpu) invert_bit(cpu, V)
