@@ -25,16 +25,34 @@ add_executable(sixtyfive02
 
 target_link_libraries(sixtyfive02 PRIVATE sixtyfive02-lib)
 
-find_package(Check)
+# Setting up testing
 
-add_executable(sixtyfive02-test
-        test/inst/arith_test.c
-        test/test.h
-        test/test.c
-        test/inst/arith_test.h
-        test/mem/mem_test.c
-        test/mem/mem_test.h
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
 
-target_link_libraries(sixtyfive02-test PRIVATE check sixtyfive02-lib m subunit)
+FetchContent_MakeAvailable(googletest)
 
+enable_testing()
+
+add_executable(sixtyfive02-test
+    test/mem/mem_test.cpp
+        test/cpu/cpu_test.cpp
+        test/inst/inst_test.cpp
+)
+
+target_link_libraries(
+    sixtyfive02-test
+    sixtyfive02-lib
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(sixtyfive02-test)
+
+file(COPY gdb DESTINATION ${CMAKE_BINARY_DIR})

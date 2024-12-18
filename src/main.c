@@ -2,30 +2,50 @@
 #include <cpu/cpu.h>
 #include <inst/arith.h>
 
+#include <cpu/flags.c>
+
+#define DEBUG
+
+void dump_cpu(struct cpu *cpu) {
+    printf("----- CPU DUMP -----\n");
+    printf("Register X:\t\t\t%02x\n", cpu->regx);
+    printf("Register Y:\t\t\t%02x\n", cpu->regy);
+    printf("Register A:\t\t\t%02x\n", cpu->rega);
+    printf("Stack Pointer:\t\t%02x\n", cpu->sp);
+
+    printf("\t\t\t\t\tNV-B DIZC\n");
+    printf("Status register:\t");
+    for (int i = 7; i >= 0; --i) {
+        printf("%d", (cpu->sr & (1 << i)) >> i);
+        if (i == 4) printf(" ");
+    }
+    printf(" (%02x)\n", cpu->sr);
+
+    printf("Program counter:\t%04x\n", cpu->pc);
+    printf("----- END OF CPU DUMP -----\n");
+}
+
 int main() {
     struct cpu *cpu = initialize_cpu();
     struct mem *mem = initialize_memory();
 
-    cpu->rega = 200;
-    byte b = 100;
-    // Example causing overflow
-    adc(cpu, mem, &b);  // Adding 0xFF to the accumulator
-    printf("Register A: %02X\n", cpu->rega);
+    uint8_t a = 0x09;
 
-    // Check Overflow and Carry Flags
-    if (cpu->sr & 0x40) {
-        printf("Overflow Flag (V) is set.\n");
-    } else {
-        printf("Overflow Flag (V) is not set.\n");
-    }
+    dump_cpu(cpu);
 
-    if (cpu->sr & 0x01) {
-        printf("Carry Flag (C) is set.\n");
-    } else {
-        printf("Carry Flag (C) is not set.\n");
-    }
+    SET_D(cpu);
 
-    free_cpu(cpu);
+    dump_cpu(cpu);
+
+    cpu->rega = 0x02;
+
+    dump_cpu(cpu);
+
+    adc(cpu, mem, &a);
+
+    dump_cpu(cpu);
+
+    printf("%02x", cpu->rega);
 
     return 0;
 }

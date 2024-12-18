@@ -1,12 +1,12 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
+#include <stdint.h>
+
 #define PAGE_COUNT  256
 #define PAGE_SIZE   256
 
-typedef unsigned char byte;
-
-short btos(byte, byte);
+short btos(uint8_t, uint8_t);
 
 #define N 1 << 7
 #define V 1 << 6
@@ -18,32 +18,32 @@ short btos(byte, byte);
 
 struct cpu {
     // 3 8-bit registers
-    byte regx;
-    byte regy;
-    byte rega;
+    uint8_t regx;
+    uint8_t regy;
+    uint8_t rega;
 
     // 8-bit stack pointer
-    byte sp;
+    uint8_t sp;
 
     // 8-bit status register
-    byte sr;
+    uint8_t sr;
 
     // 16-bit program counter
-    unsigned short pc;
+    uint16_t pc;
 
     // Temp memory buffer
-    byte tmp;
+    uint8_t tmp;
 };
 
 struct page {
-    byte content[PAGE_SIZE];
+    uint8_t content[PAGE_SIZE];
 };
 
 struct mem {
     struct page *pages[PAGE_COUNT];
 };
 
-typedef void(*inst_fn)(struct cpu*, struct mem*, byte*);
-typedef byte*(*mem_fn)(struct cpu*, struct mem*, byte, byte);
+typedef void(*inst_fn)(struct cpu*, struct mem*, uint8_t*);
+typedef uint8_t*(*mem_fn)(struct cpu*, struct mem*, uint8_t, uint8_t);
 
 #endif

@@ -3,6 +3,7 @@
 #include <cpu/cpu.h>
 
 #include "../cpu/types.h"
+#include "cpu/flags.h"
 
 /*
  ADC
@@ -11,7 +12,7 @@
     A + M + C -> A, C
     N	Z	C	I	D	V
     +	+	+	-	-	+
-    addressing	    assembler	    opc	bytes	cycles
+    addressing	    assembler	    opc	uint8_ts	cycles
     immediate	    ADC #oper	    69	2	    2  
     zeropage	    ADC oper	    65	2	    3  
     zeropage,X	    ADC oper,X	    75	2	    4  
@@ -24,36 +25,34 @@
 void adc(
     struct cpu *cpu,
     struct mem *mem,
-    byte *addr
+    uint8_t *addr
 ) {
-    short value = (short) *addr & 0xFF;
-    short result = cpu->rega + value + get_C(cpu);
+    int16_t value = (int16_t) *addr & 0xFF;
+    int16_t result = cpu->rega + value + GET_C(cpu);
 
-    if (((cpu->rega ^ result) & (value ^ result) & 0x80) != 0) {
-        set_V(cpu);
-    } else {
-        clear_V(cpu);
-    }
+    if (result & 0x80) SET_N(cpu);
+    else CLEAR_N(cpu);
 
-    if (result & 0x100) {
-        set_C(cpu);
-    } else {
-        clear_C(cpu);
-    }
+    if ((result & 0xFF) == 0x00) SET_Z(cpu);
+    else CLEAR_Z(cpu);
 
-    if ((result & 0xFF) == 0) {
-        set_Z(cpu);
-    } else {
-        clear_Z(cpu);
-    }
+    if (result & 0x100) SET_C(cpu);
+    else CLEAR_C(cpu);
 
-    if (result & 0x80) {
-        set_N(cpu);
-    } else {
-        clear_N(cpu);
+    if (CHECK_V(value & 0x80, cpu->rega & 0x80, result & 0x80)) SET_V(cpu);
+    else CLEAR_V(cpu);
+
+    if (GET_D(cpu)) {
+        if (IS_ABOVE10HEX(result & 0x0F)) {
+            result += 0x06;
+        }
+        if (IS_ABOVE10HEX((result & 0xF0) >> 8)) {
+            result += 0x60;
+        }
     }
 
     cpu->rega = result;
+    // arith(cpu, mem, addr, add);
 }
 
 /*
@@ -63,7 +62,7 @@ SBC
     A - M - C̅ -> A
     N	Z	C	I	D	V
     +	+	+	-	-	+
-    addressing	    assembler	    opc	bytes	cycles
+    addressing	    assembler	    opc	uint8_ts	cycles
     immediate	    SBC #oper	    E9	2	    2
     zeropage	    SBC oper	    E5	2	    3
     zeropage,X	    SBC oper,X	    F5	2	    4
@@ -76,11 +75,36 @@ SBC
 void sbc(
     struct cpu *cpu,
     struct mem *mem,
-    byte *addr
+    uint8_t *addr
 ) {
-    cpu->tmp = ~*addr & 0xFF;
-    invert_C(cpu);
-    adc(cpu, mem, &cpu->tmp);
+    uint8_t tmp = ~*addr & 0xFF;
+    INVERT_C(cpu);
 
+    int16_t value = (int16_t) tmp & 0xFF;
+    int16_t result = cpu->rega + value + GET_C(cpu);
 
+    if (result & 0x80) SET_N(cpu);
+    else CLEAR_N(cpu);
+
+    if ((result & 0xFF) == 0x00) SET_Z(cpu);
+    else CLEAR_Z(cpu);
+
+    if ((uint8_t) ~tmp + GET_C(cpu) > cpu->rega) SET_C(cpu);
+    else CLEAR_BIT(cpu, C);
+
+    if (CHECK_V(value & 0x80, cpu->rega & 0x80, result & 0x80)) SET_V(cpu);
+    else CLEAR_V(cpu);
+
+    if (GET_D(cpu)) {
+        if (IS_ABOVE10HEX(result & 0x0F)) {
+            result -= 0x06;
+        }
+        if (IS_ABOVE10HEX((result & 0xF0) >> 8)) {
+            result -= 0x60;
+        }
+    }
+
+    cpu->rega = result;
+
+    // arith(cpu, mem, &tmp, sub);
 }

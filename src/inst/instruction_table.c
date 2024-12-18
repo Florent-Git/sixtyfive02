@@ -4,9 +4,9 @@
 
 struct inst* insert_inst(
     struct inst* root,
-    const byte instruction_code,
-    const byte inst_len,
-    const byte inst_cycles,
+    const uint8_t instruction_code,
+    const uint8_t inst_len,
+    const uint8_t inst_cycles,
     const mem_fn mem_fn,
     const inst_fn inst
 ) {
@@ -23,9 +23,9 @@ struct inst* insert_inst(
 }
 
 struct inst* create_inst(
-    const byte instruction_code,
-    const byte inst_len,
-    const byte inst_cycles,
+    const uint8_t instruction_code,
+    const uint8_t inst_len,
+    const uint8_t inst_cycles,
     const mem_fn mem_fn,
     const inst_fn inst
 ) {
@@ -42,7 +42,7 @@ struct inst* create_inst(
 
 const struct inst* search_inst(
     const struct inst* root,
-    const byte instruction_code
+    const uint8_t instruction_code
 ) {
     if (root->inst_code == instruction_code) {
         return root;
@@ -72,7 +72,7 @@ struct inst* initialize_inst_table() {
     insert_inst(root, 0x65, 2, 3, zero_page, adc);
     insert_inst(root, 0x75, 2, 4, zero_page_x, adc);
     insert_inst(root, 0x6D, 3, 4, abs_addr, adc);
-    insert_inst(root, 0x7D, 3,4, abs_x, adc);
+    insert_inst(root, 0x7D, 3, 4, abs_x, adc);
     insert_inst(root, 0x79, 3, 4, abs_y, adc);
     insert_inst(root, 0x61, 2, 6, pre_indirect, adc);
     insert_inst(root, 0x71, 2, 5, post_indirect, adc);
@@ -92,11 +92,12 @@ void execute_instruction(
     struct cpu *cpu,
     struct mem *mem,
     struct inst *table,
-    byte opcode,
-    byte oper1,
-    byte oper2
+    uint8_t opcode,
+    uint8_t oper1,
+    uint8_t oper2
 ) {
     const struct inst* inst = search_inst(table, opcode);
-    byte *addr = inst->inst_mem(cpu, mem, oper1, oper2);
+    uint8_t *addr = inst->inst_mem(cpu, mem, oper1, oper2);
     inst->inst(cpu, mem, addr);
+    cpu->pc += 1;
 }

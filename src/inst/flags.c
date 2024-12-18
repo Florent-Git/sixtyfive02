@@ -2,32 +2,33 @@
 // Created by margaux on 24/02/09.
 //
 
-#include "flags.h"
+#include <cpu/flags.h>
+#include <cpu/types.h>
 
-void clc(struct cpu *cpu, struct mem *, byte *) {
-    clear_C(cpu);
+void clc(struct cpu *cpu, struct mem *, uint8_t *) {
+    CLEAR_C(cpu);
 }
 
-void cld(struct cpu *cpu, struct mem *, byte *) {
-    clear_D(cpu);
+void cld(struct cpu *cpu, struct mem *, uint8_t *) {
+    CLEAR_D(cpu);
 }
 
-void cli(struct cpu *cpu, struct mem *, byte *) {
-    clear_I(cpu);
+void cli(struct cpu *cpu, struct mem *, uint8_t *) {
+    CLEAR_I(cpu);
 }
 
-void clv(struct cpu *cpu, struct mem *, byte *) {
-    clear_V(cpu);
+void clv(struct cpu *cpu, struct mem *, uint8_t *) {
+    CLEAR_V(cpu);
 }
 
-void sec(struct cpu *cpu, struct mem *, byte *) {
-    set_C(cpu);
+void sec(struct cpu *cpu, struct mem *, uint8_t *) {
+    SET_C(cpu);
 }
 
-void sed(struct cpu *cpu, struct mem *, byte *) {
-    set_D(cpu);
+void sed(struct cpu *cpu, struct mem *, uint8_t *) {
+    SET_D(cpu);
 }
 
-void sei(struct cpu *cpu, struct mem *, byte *) {
-    set_I(cpu);
+void sei(struct cpu *cpu, struct mem *, uint8_t *) {
+    SET_I(cpu);
 }
